@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="main">
+      <div>
+        <h1 class="title">Pray Times</h1>
+        <h2 class="City-Name">
+          Pray Times In <span id="City-Name">Istanbul</span>
+        </h2>
+        <div class="date-time">
+          <h3 class="date" id="date"></h3>
+          <h3 id="show-time"></h3>
+        </div>
+      </div>
+
+      <div class="time">
+        <label class="city">City</label>
+        <div>
+          <input
+            type="text"
+            id="input--city"
+            value=""
+            autofocus
+            class="input"
+            placeholder="Enter Your City"
+          />
+        </div>
+      </div>
+      <div>
+        <div class="time">
+          <h1 class="time-name">Fajr:</h1>
+          <span id="Fajr" class="span">00.00</span>
+        </div>
+        <div class="time">
+          <h1 class="time-name">Sunrise:</h1>
+          <span id="Sunrise" class="span">00.00</span>
+        </div>
+        <div class="time">
+          <h1 class="time-name">Dhuhr:</h1>
+          <span id="Dhuhr" class="span">00.00</span>
+        </div>
+        <div class="time">
+          <h1 class="time-name">Asr:</h1>
+          <span id="Asr" class="span">00.00</span>
+        </div>
+        <div class="time">
+          <h1 class="time-name">Maghrib:</h1>
+          <span id="Maghrib" class="span">00.00</span>
+        </div>
+        <div class="time">
+          <h1 class="time-name">Isha:</h1>
+          <span id="Isha" class="span">00.00</span>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="./node_modules/axios/dist/axios.min.js"></script>
+  <script>
+    const cityName = document.getElementById("City-Name");
+    const date = document.getElementById("date");
+    const showTime = document.getElementById("show-time");
+    const inputCity = document.getElementById("input--city");
+    const Sunrise = document.getElementById("Sunrise");
+    const Fajr = document.getElementById("Fajr");
+    const Dhuhr = document.getElementById("Dhuhr");
+    const Asr = document.getElementById("Asr");
+    const Maghrib = document.getElementById("Maghrib");
+    const Isha = document.getElementById("Isha");
+
+    inputCity.addEventListener("change", function () {
+      getPrayTimesByCity(inputCity.value);
+      cityName.innerText = inputCity.value;
+    });
+
+    function getPrayTimesByCity(city = "istanbul") {
+      axios
+        .get(
+          ` http://api.aladhan.com/v1/timingsByCity?city=${city}&country=Turkye&method=8`
+        )
+        .then((res) => {
+          console.log(res.data.data.date);
+          Sunrise.innerText = res.data.data.timings.Sunrise.slice(0, 5);
+          Fajr.innerText = res.data.data.timings.Fajr.slice(0, 5);
+          Dhuhr.innerText = res.data.data.timings.Dhuhr.slice(0, 5);
+          Asr.innerText = res.data.data.timings.Asr.slice(0, 5);
+          Maghrib.innerText = res.data.data.timings.Maghrib.slice(0, 5);
+          Isha.innerText = res.data.data.timings.Isha.slice(0, 5);
+          date.innerText = res.data.data.date.gregorian.date;
+          showTime.innerText =
+            res.data.data.date.gregorian.weekday.en +
+            " " +
+            res.data.data.date.gregorian.day;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    getPrayTimesByCity();
+  </script>
+</html>
